@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState,} from "react";
 import { Alert, Button, FlatList, StyleSheet, Text, View } from "react-native";
+import { useFocusEffect } from "expo-router";
 
 //URL base do Swagger Petstore
 const API_BASE = 'https://petstore.swagger.io/v2'
@@ -23,17 +24,21 @@ export default function Home() {
       const response = await axios.get<Pet[]>(`${API_BASE}/pet/findByStatus`, {
         params: { status: 'available' }
       })
-      setPets(response.data)
+      const sortedPets = response.data.sort((a,b)=>a.id-b.id)
+      setPets(sortedPets)
     } catch (error) {
       console.log("Error ao buscar os pets: ", error)
       Alert.alert("Erro", "Falha ao buscar pets")
     }
   }
 
-  //Buscar os pets na inicialização do App
-  useEffect(() => {
-    fetchPets()
-  }, [])
+  //Toda vez que a tela index recebe foco, é chamado a função
+  //fetchPets
+  useFocusEffect(
+    useCallback(()=>{
+      fetchPets()
+    },[fetchPets])
+  )
 
 
   return (
@@ -58,7 +63,7 @@ export default function Home() {
       />
 
       <View style={styles.buttons}>
-        <Button title="Criar Pet" />
+        <Button title="Criar Pet" onPress={()=>router.push("/create")} />
         <Button title="Atualizar Pet" />
         <Button title="Deletar Pet" />
       </View>
