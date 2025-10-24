@@ -64,8 +64,8 @@ export default function Home() {
 
       <View style={styles.buttons}>
         <Button title="Criar Pet" onPress={()=>router.push("/create")} />
-        <Button title="Atualizar Pet" />
-        <Button title="Deletar Pet" />
+        <Button title="Atualizar Pet" onPress={()=>router.push("/update")} />
+        <Button title="Deletar Pet" onPress={()=>router.push("/delete")}/>
       </View>
     </View>
   );
